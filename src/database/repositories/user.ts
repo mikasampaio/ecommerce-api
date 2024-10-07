@@ -1,6 +1,5 @@
 import { User } from '../../entities/classes/user';
 import { UserModel } from '../schemas/user';
-
 export class UserRepository {
   constructor(private model: typeof UserModel) {}
 

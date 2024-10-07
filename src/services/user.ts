@@ -1,9 +1,8 @@
-import { StatusCodes } from 'http-status-codes';
+import bcrypt from 'bcryptjs';
 
 import { UserRepository } from '../database/repositories/user';
 import { CreateUserDTO } from '../dtos/UserDTO';
 import { User } from '../entities/classes/user';
-import { ErrorMessage } from '../errors/errorMessage';
 
 export class UserService {
   constructor(private userRepository: UserRepository) {}
@@ -22,6 +21,10 @@ export class UserService {
       password,
       type,
     });
+
+    if (password) {
+      user.password = await bcrypt.hash(password, 10);
+    }
 
     const createdUser = await this.userRepository.create(user);
 

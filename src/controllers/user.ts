@@ -5,7 +5,6 @@ import { UserModel } from '../database/schemas/user';
 import { CreateUserDTO } from '../dtos/UserDTO';
 import { ErrorMessage } from '../errors/errorMessage';
 import { UserService } from '../services/user';
-
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -26,12 +25,6 @@ export class UserController {
         );
       }
 
-      // if (password) {
-      //   const hashedPassword = await bcrypt.hash(password, 10);
-      //   req.body.password = hashedPassword;
-      // }
-      // console.log(password);
-
       const user = await this.userService.create({
         firstName,
         lastName,
@@ -44,6 +37,7 @@ export class UserController {
       return res.status(StatusCodes.CREATED).json(user);
     } catch (err) {
       next(err);
+      return err;
     }
   };
 
@@ -51,7 +45,12 @@ export class UserController {
     try {
       const users = await this.userService.list();
 
-      return res.status(StatusCodes.OK).json(users);
+      const usersFormatted = users.map((user) => ({
+        ...user,
+        password: undefined,
+      }));
+
+      return res.status(StatusCodes.OK).json(usersFormatted);
     } catch (err) {
       next(err);
     }

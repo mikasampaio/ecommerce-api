@@ -7,4 +7,9 @@ export type IUser = {
   email: string;
   password: string;
   type: UserType;
+  status?: {
+    createdAt: Date;
+    updatedAt: Date | null;
+    deletedAt: Date | null;
+  };
 };
