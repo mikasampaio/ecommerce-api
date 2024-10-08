@@ -8,7 +8,7 @@ export const sessionRouter = Router();
 
 const sessionControler = new SessionController();
 
-sessionRouter.post(
+sessionRouter.get(
   '/',
   validator({
     schema: sessionSchema,

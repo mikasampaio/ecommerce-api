@@ -3,6 +3,7 @@ import { Router } from 'express';
 import { UserController } from '../controllers/user';
 import { createUserSchema } from '../dtos/UserDTO';
 import { UserFactory } from '../factories/user';
+import authMiddleware from '../middlewares/authentication';
 import { QueryParams, validator } from '../middlewares/validator';
 
 export const userRouter = Router();
@@ -18,4 +19,5 @@ userRouter.post(
   userController.create,
 );
 
+userRouter.use(authMiddleware);
 userRouter.get('/', userController.list);

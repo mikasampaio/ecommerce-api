@@ -1,8 +1,9 @@
 import bcrypt from 'bcryptjs';
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { isValid } from 'zod';
+import jwt from 'jsonwebtoken';
 
+import authConfig from '../config/session';
 import { UserModel } from '../database/schemas/user';
 import { sessionObject } from '../dtos/sessionDTO';
 import { ErrorMessage } from '../errors/errorMessage';
@@ -44,6 +45,9 @@ export class SessionController {
         lastName: user.lastName,
         type: user.type,
         status: user.status,
+        token: jwt.sign({ _id: user._id }, authConfig.secret, {
+          expiresIn: authConfig.expiresIn,
+        }),
       });
     } catch (error) {
       next(error);

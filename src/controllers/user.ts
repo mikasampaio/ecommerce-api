@@ -3,14 +3,16 @@ import { StatusCodes } from 'http-status-codes';
 
 import { UserModel } from '../database/schemas/user';
 import { CreateUserDTO } from '../dtos/UserDTO';
+import { User } from '../entities/classes/user';
 import { ErrorMessage } from '../errors/errorMessage';
 import { UserService } from '../services/user';
+
 export class UserController {
   constructor(private userService: UserService) {}
 
   create = async (
     req: Request<unknown, unknown, CreateUserDTO>,
-    res: Response,
+    res: Response<User>,
     next: NextFunction,
   ) => {
     try {
@@ -34,10 +36,9 @@ export class UserController {
       });
 
       // RETORNANDO A RESPOSTA, APÓS A CRIAÇÃO
-      return res.status(StatusCodes.CREATED).json(user);
+      res.status(StatusCodes.CREATED).json(user);
     } catch (err) {
       next(err);
-      return err;
     }
   };
 
@@ -50,7 +51,7 @@ export class UserController {
         password: undefined,
       }));
 
-      return res.status(StatusCodes.OK).json(usersFormatted);
+      res.status(StatusCodes.OK).json(usersFormatted);
     } catch (err) {
       next(err);
     }

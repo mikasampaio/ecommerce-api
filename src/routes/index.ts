@@ -7,5 +7,5 @@ import { userRouter } from './user';
 export const routes = Router();
 
 routes.use('/', baseRoutes);
-routes.use('/user', userRouter);
 routes.use('/session', sessionRouter);
+routes.use('/user', userRouter);
