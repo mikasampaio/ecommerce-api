@@ -10,12 +10,12 @@ export function errorHandler(
   __: NextFunction,
 ) {
   if (error instanceof ErrorMessage) {
-    return res.status(error.statusCode).json({
+    res.status(error.statusCode).json({
       message: error.message,
     });
   }
 
-  return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+  res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
     message: error.message,
   });
 }
