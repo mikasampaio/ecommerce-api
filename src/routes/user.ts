@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { UserController } from '../controllers/user';
-import { createUserSchema } from '../dtos/UserDTO';
+import { createUserSchema, updateUserSchema } from '../dtos/UserDTO';
 import { UserFactory } from '../factories/user';
 import authMiddleware from '../middlewares/authentication';
 import { QueryParams, validator } from '../middlewares/validator';
@@ -20,4 +20,14 @@ userRouter.post(
 );
 
 userRouter.use(authMiddleware);
+
 userRouter.get('/', userController.list);
+userRouter.put(
+  '/',
+  validator({
+    schema: updateUserSchema,
+    type: QueryParams.BODY,
+  }),
+  userController.update,
+);
+userRouter.delete('/', userController.delete);

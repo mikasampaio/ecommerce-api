@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 
 import { UserRepository } from '../database/repositories/user';
-import { CreateUserDTO } from '../dtos/UserDTO';
+import { CreateUserDTO, UpdateUserDTO } from '../dtos/UserDTO';
 import { User } from '../entities/classes/user';
 
 export class UserService {
@@ -35,5 +35,15 @@ export class UserService {
     const users = await this.userRepository.list();
 
     return users;
+  }
+
+  async update(id: string, user: UpdateUserDTO): Promise<User | undefined> {
+    const updatedUser = await this.userRepository.update(id, user);
+
+    return updatedUser;
+  }
+
+  async delete(id: string): Promise<User | null> {
+    return await this.userRepository.delete(id);
   }
 }

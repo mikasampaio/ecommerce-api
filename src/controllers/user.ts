@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
 import { UserModel } from '../database/schemas/user';
-import { CreateUserDTO } from '../dtos/UserDTO';
+import { CreateUserDTO, UpdateUserDTO } from '../dtos/UserDTO';
 import { User } from '../entities/classes/user';
 import { ErrorMessage } from '../errors/errorMessage';
 import { UserService } from '../services/user';
@@ -52,6 +52,63 @@ export class UserController {
       }));
 
       res.status(StatusCodes.OK).json(usersFormatted);
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  update = async (
+    req: Request<{ id: string }, unknown, UpdateUserDTO>,
+    res: Response<User>,
+    next: NextFunction,
+  ) => {
+    try {
+      const { id } = req.query;
+      const user = req.body;
+
+      if (!id) {
+        throw new ErrorMessage(
+          'Id do usuário é obrigatório',
+          StatusCodes.BAD_REQUEST,
+        );
+      }
+
+      const updatedUser = await this.userService.update(id as string, user);
+
+      if (!updatedUser) {
+        throw new ErrorMessage('Usuário não encontrado', StatusCodes.NOT_FOUND);
+      }
+
+      res.status(StatusCodes.OK).json(updatedUser);
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  delete = async (
+    req: Request<{ id: string }>,
+    res: Response<unknown>,
+    next: NextFunction,
+  ) => {
+    try {
+      const { id } = req.query;
+
+      if (!id) {
+        throw new ErrorMessage(
+          'Id do usuário é obrigatório',
+          StatusCodes.BAD_REQUEST,
+        );
+      }
+
+      const deletedUser = await this.userService.delete(id as string);
+
+      if (!deletedUser) {
+        throw new ErrorMessage('Usuário não encontrado', StatusCodes.NOT_FOUND);
+      }
+
+      res
+        .status(StatusCodes.OK)
+        .send({ message: 'Usuário deletado com sucesso' });
     } catch (err) {
       next(err);
     }

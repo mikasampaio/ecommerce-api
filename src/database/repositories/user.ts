@@ -32,4 +32,24 @@ export class UserRepository {
 
     return users.map((user) => user.toObject<User>());
   }
+
+  async update(id: string, updatedUser: User): Promise<User | undefined> {
+    const updated = await this.model.findByIdAndUpdate(
+      id,
+      { $set: { ...updatedUser, 'status.updatedAt': new Date() } },
+      {
+        new: true,
+      },
+    );
+
+    return updated?.toObject<User>();
+  }
+
+  async delete(id: string): Promise<User | null> {
+    const deletedUser = await this.model.findByIdAndDelete(id, {
+      'status.deletedAt': new Date(),
+    });
+
+    return deletedUser;
+  }
 }
