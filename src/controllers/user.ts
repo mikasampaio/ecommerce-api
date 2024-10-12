@@ -65,11 +65,7 @@ export class UserController {
     try {
       const { id } = req.params;
 
-      console.log('id', id);
-
       const user = await this.userService.findById(id);
-
-      console.log('usseeerr', user);
 
       res.status(StatusCodes.OK).json(user);
     } catch (err) {

@@ -16,6 +16,27 @@ export class CategoryRepository {
     return categories.map((category) => category.toObject<Category>());
   }
 
+  async update(
+    id: string,
+    data: Partial<Category>,
+  ): Promise<Category | undefined> {
+    const updatedCategory = await this.repository.findByIdAndUpdate(
+      id,
+      { $set: { ...data, 'status.updatedAt': new Date() } },
+      { new: true },
+    );
+
+    return updatedCategory?.toObject<Category>();
+  }
+
+  async delete(id: string): Promise<Category | null> {
+    const deletedCategory = await this.repository.findByIdAndDelete(id, {
+      'status.deletedAt': new Date(),
+    });
+
+    return deletedCategory;
+  }
+
   async findByName(name: string): Promise<Category | undefined> {
     const category = await this.repository.findOne({ name });
 

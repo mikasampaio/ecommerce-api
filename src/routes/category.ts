@@ -1,7 +1,10 @@
 import { Router } from 'express';
 
 import { CategoryController } from '../controllers/category';
-import { createCategorySchema } from '../dtos/CategoryDTO';
+import {
+  createCategorySchema,
+  updateCategorySchema,
+} from '../dtos/CategoryDTO';
 import { CategoryFactory } from '../factories/category';
 import { QueryParams, validator } from '../middlewares/validator';
 
@@ -17,3 +20,17 @@ categoryRouter.post(
   }),
   categoryController.create,
 );
+
+categoryRouter.get('/', categoryController.get);
+
+categoryRouter.get('/:id', categoryController.findById);
+
+categoryRouter.put(
+  '/',
+  validator({
+    schema: updateCategorySchema,
+    type: QueryParams.BODY,
+  }),
+  categoryController.update,
+);
+categoryRouter.delete('/', categoryController.delete);
