@@ -6,7 +6,7 @@ import sessionConfig from '../config/session';
 import { ErrorMessage } from '../errors/errorMessage';
 
 interface CustomRequest extends Request {
-  _id?: string;
+  userId?: string;
 }
 
 export default function authMiddleware(
@@ -32,7 +32,7 @@ export default function authMiddleware(
         throw new ErrorMessage('Token inválido', StatusCodes.UNAUTHORIZED);
       }
 
-      req._id = (result as JwtPayload)?._id as string;
+      req.userId = (result as JwtPayload)?._id as string;
     });
   } catch (error) {
     throw new ErrorMessage('Token inválido', StatusCodes.UNAUTHORIZED);

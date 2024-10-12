@@ -22,6 +22,9 @@ userRouter.post(
 userRouter.use(authMiddleware);
 
 userRouter.get('/', userController.list);
+
+userRouter.get('/:id', userController.findById);
+
 userRouter.put(
   '/',
   validator({

@@ -1,8 +1,10 @@
 import bcrypt from 'bcryptjs';
+import { StatusCodes } from 'http-status-codes';
 
 import { UserRepository } from '../database/repositories/user';
 import { CreateUserDTO, UpdateUserDTO } from '../dtos/UserDTO';
 import { User } from '../entities/classes/user';
+import { ErrorMessage } from '../errors/errorMessage';
 
 export class UserService {
   constructor(private userRepository: UserRepository) {}
@@ -45,5 +47,15 @@ export class UserService {
 
   async delete(id: string): Promise<User | null> {
     return await this.userRepository.delete(id);
+  }
+
+  async findById(id: string): Promise<User> {
+    const user = await this.userRepository.findById(id);
+
+    if (!user) {
+      throw new ErrorMessage('Usuário não encontrado', StatusCodes.NOT_FOUND);
+    }
+
+    return user;
   }
 }

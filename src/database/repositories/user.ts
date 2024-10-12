@@ -33,6 +33,12 @@ export class UserRepository {
     return users.map((user) => user.toObject<User>());
   }
 
+  async findById(id: string): Promise<User | undefined> {
+    const user = await this.model.findById(id);
+
+    return user?.toObject<User>();
+  }
+
   async update(
     id: string,
     updatedUser: Partial<User>,

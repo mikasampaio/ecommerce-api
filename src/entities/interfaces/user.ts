@@ -1,4 +1,4 @@
-import { UserType } from './common';
+import { Status, UserType } from './common';
 
 export type IUser = {
   _id?: string;
@@ -7,9 +7,5 @@ export type IUser = {
   email: string;
   password: string;
   type: UserType;
-  status?: {
-    createdAt: Date;
-    updatedAt: Date | null;
-    deletedAt: Date | null;
-  };
+  status?: Status;
 };

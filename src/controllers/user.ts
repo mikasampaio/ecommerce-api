@@ -57,6 +57,26 @@ export class UserController {
     }
   };
 
+  findById = async (
+    req: Request<{ id: string }>,
+    res: Response<User>,
+    next: NextFunction,
+  ) => {
+    try {
+      const { id } = req.params;
+
+      console.log('id', id);
+
+      const user = await this.userService.findById(id);
+
+      console.log('usseeerr', user);
+
+      res.status(StatusCodes.OK).json(user);
+    } catch (err) {
+      next(err);
+    }
+  };
+
   update = async (
     req: Request<{ id: string }, unknown, UpdateUserDTO>,
     res: Response<User>,
