@@ -33,7 +33,10 @@ export class UserRepository {
     return users.map((user) => user.toObject<User>());
   }
 
-  async update(id: string, updatedUser: User): Promise<User | undefined> {
+  async update(
+    id: string,
+    updatedUser: Partial<User>,
+  ): Promise<User | undefined> {
     const updated = await this.model.findByIdAndUpdate(
       id,
       { $set: { ...updatedUser, 'status.updatedAt': new Date() } },

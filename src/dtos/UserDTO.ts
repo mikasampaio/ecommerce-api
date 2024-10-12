@@ -17,13 +17,16 @@ export const createUserSchema = {
 };
 
 export const updateUserSchema = {
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
-  email: z.string().email({ message: 'E-mail inválido' }).min(1),
-  password: z.string().min(8, {
-    message: 'A senha deve ter no mínimo 8 caracteres',
-  }),
-  type: z.nativeEnum(UserType),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  email: z.string().email({ message: 'E-mail inválido' }).optional(),
+  password: z
+    .string()
+    .min(8, {
+      message: 'A senha deve ter no mínimo 8 caracteres',
+    })
+    .optional(),
+  type: z.nativeEnum(UserType).optional(),
 };
 
 const createUserObject = z.object(createUserSchema);
