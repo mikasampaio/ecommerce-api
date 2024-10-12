@@ -16,6 +16,12 @@ export class UserService {
     password,
     type,
   }: CreateUserDTO): Promise<User> {
+    const foundUser = await this.userRepository.getByEmail(email);
+
+    if (foundUser) {
+      throw new ErrorMessage('Usuário já cadastrado', StatusCodes.BAD_REQUEST);
+    }
+
     const user = new User({
       firstName,
       lastName,

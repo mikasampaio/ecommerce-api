@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 
 import { UserController } from '../controllers/user';
 import { createUserSchema, updateUserSchema } from '../dtos/UserDTO';
@@ -21,9 +21,10 @@ userRouter.post(
 
 userRouter.use(authMiddleware);
 
-userRouter.get('/', userController.list);
-
-userRouter.get('/:id', userController.findById);
+userRouter.get('/', (req: Request, res: Response, next: NextFunction) => {
+  if (req.query.id) return userController.findById(req, res, next);
+  userController.list(req, res, next);
+});
 
 userRouter.put(
   '/',
@@ -33,4 +34,5 @@ userRouter.put(
   }),
   userController.update,
 );
+
 userRouter.delete('/', userController.delete);

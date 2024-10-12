@@ -3,14 +3,14 @@ import { StatusCodes } from 'http-status-codes';
 
 import { CreateCategoryDTO, UpdateCategoryDTO } from '../dtos/CategoryDTO';
 import { Category } from '../entities/classes/category';
-import { ErrorMessage } from '../errors/errorMessage';
 import { CategoryService } from '../services/category';
+import { BodyRequest } from './types';
 
 export class CategoryController {
   constructor(private categoryService: CategoryService) {}
 
   create = async (
-    req: Request<unknown, unknown, CreateCategoryDTO>,
+    req: BodyRequest<CreateCategoryDTO>,
     res: Response<Category>,
     next: NextFunction,
   ) => {

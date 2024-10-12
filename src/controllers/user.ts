@@ -18,15 +18,6 @@ export class UserController {
     try {
       const { firstName, lastName, email, password, type } = req.body;
 
-      const foundUser = await UserModel.findOne({ email });
-
-      if (foundUser) {
-        throw new ErrorMessage(
-          'Usuário já cadastrado',
-          StatusCodes.BAD_REQUEST,
-        );
-      }
-
       const user = await this.userService.create({
         firstName,
         lastName,
@@ -57,15 +48,11 @@ export class UserController {
     }
   };
 
-  findById = async (
-    req: Request<{ id: string }>,
-    res: Response<User>,
-    next: NextFunction,
-  ) => {
+  findById = async (req: Request, res: Response<User>, next: NextFunction) => {
     try {
-      const { id } = req.params;
+      const { id } = req.query;
 
-      const user = await this.userService.findById(id);
+      const user = await this.userService.findById(id as string);
 
       res.status(StatusCodes.OK).json(user);
     } catch (err) {
@@ -81,13 +68,6 @@ export class UserController {
     try {
       const { id } = req.query;
       const user = req.body;
-
-      if (!id) {
-        throw new ErrorMessage(
-          'Id do usuário é obrigatório',
-          StatusCodes.BAD_REQUEST,
-        );
-      }
 
       const updatedUser = await this.userService.update(id as string, user);
 
@@ -108,13 +88,6 @@ export class UserController {
   ) => {
     try {
       const { id } = req.query;
-
-      if (!id) {
-        throw new ErrorMessage(
-          'Id do usuário é obrigatório',
-          StatusCodes.BAD_REQUEST,
-        );
-      }
 
       const deletedUser = await this.userService.delete(id as string);
 

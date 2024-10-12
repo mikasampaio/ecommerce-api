@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 
 import { CategoryController } from '../controllers/category';
 import {
@@ -21,9 +21,10 @@ categoryRouter.post(
   categoryController.create,
 );
 
-categoryRouter.get('/', categoryController.get);
-
-categoryRouter.get('/:id', categoryController.findById);
+categoryRouter.get('/', (req: Request, res: Response, next: NextFunction) => {
+  if (req.query.id) return categoryController.findById(req, res, next);
+  categoryController.get(req, res, next);
+});
 
 categoryRouter.put(
   '/',
@@ -33,4 +34,5 @@ categoryRouter.put(
   }),
   categoryController.update,
 );
+
 categoryRouter.delete('/', categoryController.delete);
