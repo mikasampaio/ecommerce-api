@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-import { CreateProductDTO } from '../dtos/ProductDTO';
+import { CreateProductDTO, UpdateProductDTO } from '../dtos/ProductDTO';
 import { Product } from '../entities/classes/product';
 import { UserType } from '../entities/interfaces/common';
 import { ErrorMessage } from '../errors/errorMessage';
@@ -61,13 +61,59 @@ export class ProductController {
     }
   };
 
-  list = async (_: Request, res: Response, next: NextFunction) => {
+  get = async (_: Request, res: Response, next: NextFunction) => {
     try {
-      const products = await this.productService.list();
+      const products = await this.productService.get();
 
       res.status(StatusCodes.OK).json(products);
     } catch (err) {
       next(err);
+    }
+  };
+
+  getById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.query;
+
+      const product = await this.productService.getById(id as string);
+
+      res.status(StatusCodes.OK).json(product);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  update = async (
+    req: Request<{ id?: string }, unknown, UpdateProductDTO>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const { id } = req.query;
+      const product = req.body;
+
+      const updatedProduct = await this.productService.update(
+        id as string,
+        product,
+      );
+
+      res.status(StatusCodes.OK).json(updatedProduct);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  delete = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.query;
+
+      await this.productService.delete(id as string);
+
+      res
+        .status(StatusCodes.OK)
+        .json({ message: 'Produto deletado com sucesso' });
+    } catch (error) {
+      next(error);
     }
   };
 }

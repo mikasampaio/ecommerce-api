@@ -13,7 +13,9 @@ export const createProductSchema = {
   size: z
     .array(SizeSchema)
     .min(1, 'Deve haver pelo menos um tamanho selecionado'),
-  color: z.array(z.string()).optional(),
+  color: z.array(z.string().regex(/^#[A-Fa-f0-9]{6}$/), {
+    message: 'Cor inválida. Deve ser um código hexadecimal de 6 caracteres',
+  }),
   discount: z.number().optional(),
   path: z.array(z.string()).optional(),
 };
@@ -27,7 +29,7 @@ export const updateProductSchema = {
     .array(SizeSchema)
     .min(1, 'Deve haver pelo menos um tamanho selecionado'),
   path: z.array(z.string()).optional(),
-  color: z.array(z.string()).optional(),
+  color: z.array(z.string().regex(/^#[A-Fa-f0-9]{6}$/)).optional(),
   quantity: z.number().optional(),
   discount: z.number().optional(),
 };

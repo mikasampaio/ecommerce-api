@@ -1,3 +1,4 @@
+import { UpdateProductDTO } from '../../dtos/ProductDTO';
 import { Product } from '../../entities/classes/product';
 import { ProductModel } from '../schemas/product';
 
@@ -10,10 +11,16 @@ export class ProductRepository {
     return createdProduct.toObject<Product>();
   }
 
-  async list(): Promise<Product[]> {
+  async get(): Promise<Product[]> {
     const products = await this.model.find();
 
     return products.map((product) => product.toObject<Product>());
+  }
+
+  async getById(id: string): Promise<Product | undefined> {
+    const product = await this.model.findById(id);
+
+    return product?.toObject<Product>();
   }
 
   async update(
