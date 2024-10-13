@@ -1,21 +1,22 @@
 import { NextFunction, Request, Response, Router } from 'express';
 
 import { CategoryController } from '../controllers/category';
-import {
-  createCategorySchema,
-  updateCategorySchema,
-} from '../dtos/CategoryDTO';
+import { categorySchema, updateCategorySchema } from '../dtos/CategoryDTO';
 import { CategoryFactory } from '../factories/category';
+import { UserFactory } from '../factories/user';
 import { QueryParams, validator } from '../middlewares/validator';
 
 export const categoryRouter = Router();
 
-const categoryController = new CategoryController(CategoryFactory.getService());
+const categoryController = new CategoryController(
+  CategoryFactory.getService(),
+  UserFactory.getService(),
+);
 
 categoryRouter.post(
   '/',
   validator({
-    schema: createCategorySchema,
+    schema: categorySchema,
     type: QueryParams.BODY,
   }),
   categoryController.create,

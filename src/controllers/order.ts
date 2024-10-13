@@ -1,22 +1,22 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-import { CreateCategoryDTO, UpdateCategoryDTO } from '../dtos/CategoryDTO';
-import { Category } from '../entities/classes/category';
+import { CreateOrderDTO, UpdateOrderDTO } from '../dtos/OrderDTO';
+import { Order } from '../entities/classes/order';
 import { UserType } from '../entities/interfaces/common';
 import { ErrorMessage } from '../errors/errorMessage';
-import { CategoryService } from '../services/category';
+import { OrderService } from '../services/order';
 import { UserService } from '../services/user';
 
-export class CategoryController {
+export class OrderController {
   constructor(
-    private categoryService: CategoryService,
+    private orderService: OrderService,
     private userService: UserService,
   ) {}
 
   create = async (
-    req: Request<unknown, unknown, CreateCategoryDTO> & { userId?: string },
-    res: Response<Category>,
+    req: Request<unknown, unknown, CreateOrderDTO> & { userId?: string },
+    res: Response<Order>,
     next: NextFunction,
   ) => {
     try {
@@ -30,11 +30,11 @@ export class CategoryController {
         );
       }
 
-      const { name } = req.body;
+      const { products } = req.body;
 
-      const category = await this.categoryService.create({ name });
+      const order = await this.orderService.create({ products });
 
-      res.status(StatusCodes.CREATED).json(category);
+      res.status(StatusCodes.CREATED).json(order);
     } catch (err) {
       next(err);
     }
@@ -42,42 +42,39 @@ export class CategoryController {
 
   get = async (_: Request, res: Response, next: NextFunction) => {
     try {
-      const categories = await this.categoryService.get();
+      const orders = await this.orderService.get();
 
-      res.status(StatusCodes.OK).json(categories);
+      res.status(StatusCodes.OK).json(orders);
     } catch (err) {
       next(err);
     }
   };
 
-  findById = async (req: Request, res: Response, next: NextFunction) => {
+  getById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.query;
 
-      const category = await this.categoryService.findById(id as string);
+      const order = await this.orderService.getById(id as string);
 
-      res.status(StatusCodes.OK).json(category);
+      res.status(StatusCodes.OK).json(order);
     } catch (err) {
       next(err);
     }
   };
 
   update = async (
-    req: Request<{ id: string }, unknown, UpdateCategoryDTO>,
+    req: Request<{ id: string }, unknown, UpdateOrderDTO>,
     res: Response,
     next: NextFunction,
   ) => {
     try {
       const { id } = req.query;
 
-      const category = req.body;
+      const data = req.body;
 
-      const updatedCategory = await this.categoryService.update(
-        id as string,
-        category,
-      );
+      const updatedOrder = await this.orderService.update(id as string, data);
 
-      res.status(StatusCodes.OK).json(updatedCategory);
+      res.status(StatusCodes.OK).json(updatedOrder);
     } catch (err) {
       next(err);
     }
@@ -91,11 +88,11 @@ export class CategoryController {
     try {
       const { id } = req.query;
 
-      await this.categoryService.delete(id as string);
+      await this.orderService.delete(id as string);
 
       res
         .status(StatusCodes.OK)
-        .json({ message: 'Categoria deletado com sucesso' });
+        .json({ message: 'Pedido deletado com sucesso' });
     } catch (err) {
       next(err);
     }
