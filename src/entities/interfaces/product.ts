@@ -9,16 +9,22 @@ export enum Size {
   XXL = 'XXL', // Duplo Extra Grande
 }
 
+export interface Stock {
+  _id?: string;
+  name?: string;
+  quantity?: number;
+  size?: Size[];
+  discount?: number | null;
+  color?: string[];
+  path?: string[];
+  description?: string;
+  status?: Status;
+}
+
 export interface IProduct {
   _id?: string;
   name: string;
   price: number;
-  quantity: number;
   category: Category;
-  size: Size[];
-  path?: string[];
-  description?: string;
-  color?: string[];
-  discount?: number;
-  status?: Status;
+  stock: Stock[];
 }

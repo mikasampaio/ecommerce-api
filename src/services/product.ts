@@ -46,18 +46,19 @@ export class ProductService {
     id: string,
     product: UpdateProductDTO,
   ): Promise<Product | undefined> {
-    const category = await this.categoryRepository.findById(
-      product?.category as string,
-    );
+    if (product.category) {
+      const category = await this.categoryRepository.findById(
+        product.category as string,
+      );
 
-    if (!category) {
-      throw new ErrorMessage('Categoria não existe', StatusCodes.NOT_FOUND);
+      if (!category) {
+        throw new ErrorMessage('Categoria não existe', StatusCodes.NOT_FOUND);
+      }
+
+      product.category = category._id;
     }
 
-    const updatedProduct = await this.productRepository.update(id, {
-      ...product,
-      category,
-    });
+    const updatedProduct = await this.productRepository.update(id, product);
 
     if (!updatedProduct) {
       throw new ErrorMessage('Produto não encontrado', StatusCodes.NOT_FOUND);
