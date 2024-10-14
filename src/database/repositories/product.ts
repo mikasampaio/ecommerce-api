@@ -45,4 +45,12 @@ export class ProductRepository {
 
     return deletedProduct;
   }
+
+  async findOne(
+    data: { [key: string]: unknown } & { _id: string },
+  ): Promise<Product | undefined> {
+    const product = await this.model.findOne({ $or: [data] });
+
+    return product?.toObject<Product>();
+  }
 }

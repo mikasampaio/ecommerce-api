@@ -10,7 +10,7 @@ export enum Size {
 }
 
 export interface Stock {
-  _id?: string;
+  _id?: number;
   name?: string;
   quantity?: number;
   size?: Size[];

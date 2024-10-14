@@ -1,15 +1,18 @@
 import { z } from 'zod';
 
+import { OrderStatus } from '../entities/interfaces/order';
 import { Size } from '../entities/interfaces/product';
 
 export const orderSchema = {
-  products: z.array(
+  orderStatus: z.nativeEnum(OrderStatus).default(OrderStatus.PENDING),
+  items: z.array(
     z.object({
       product: z
         .string({
           required_error: 'Produto é obrigatório',
         })
         .length(24),
+      stock: z.number(),
       quantity: z.number().int().positive(),
       size: z.nativeEnum(Size).default(Size.M),
       color: z.string().regex(/^#[A-Fa-f0-9]{6}$/),
@@ -18,7 +21,8 @@ export const orderSchema = {
 };
 
 export const updateOrderSchema = {
-  products: z.array(
+  orderStatus: z.nativeEnum(OrderStatus).optional(),
+  items: z.array(
     z.object({
       product: z
         .string({
@@ -26,6 +30,7 @@ export const updateOrderSchema = {
         })
         .length(24)
         .optional(),
+      stock: z.number().optional(),
       quantity: z.number().int().positive().optional(),
       size: z.nativeEnum(Size).default(Size.M).optional(),
       color: z

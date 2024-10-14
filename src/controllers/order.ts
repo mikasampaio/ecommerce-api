@@ -3,8 +3,6 @@ import { StatusCodes } from 'http-status-codes';
 
 import { CreateOrderDTO, UpdateOrderDTO } from '../dtos/OrderDTO';
 import { Order } from '../entities/classes/order';
-import { UserType } from '../entities/interfaces/common';
-import { ErrorMessage } from '../errors/errorMessage';
 import { OrderService } from '../services/order';
 import { UserService } from '../services/user';
 
@@ -21,18 +19,14 @@ export class OrderController {
   ) => {
     try {
       const id = req.userId;
-      const { type } = await this.userService.findById(id as string);
 
-      if (type !== UserType.ADMIN) {
-        throw new ErrorMessage(
-          'Usuário não possui permissão',
-          StatusCodes.UNAUTHORIZED,
-        );
-      }
+      const { items, orderStatus } = req.body;
 
-      const { products } = req.body;
-
-      const order = await this.orderService.create({ products });
+      const order = await this.orderService.create({
+        items,
+        orderStatus,
+        user: id as string,
+      });
 
       res.status(StatusCodes.CREATED).json(order);
     } catch (err) {

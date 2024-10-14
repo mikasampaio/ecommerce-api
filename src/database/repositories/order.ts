@@ -11,7 +11,10 @@ export class OrderRepository {
   }
 
   async get(): Promise<Order[]> {
-    const orders = await this.model.find();
+    const orders = await this.model.find().populate({
+      path: 'user',
+      select: 'firstName lastName',
+    });
 
     return orders.map((order) => order.toObject<Order>());
   }
@@ -33,6 +36,8 @@ export class OrderRepository {
         new: true,
       },
     );
+
+    console.log(updated);
 
     return updated?.toObject<Order>();
   }

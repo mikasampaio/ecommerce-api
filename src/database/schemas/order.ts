@@ -1,6 +1,6 @@
 import mongoose, { Schema, Types } from 'mongoose';
 
-import { IOrder } from '../../entities/interfaces/order';
+import { IOrder, OrderStatus } from '../../entities/interfaces/order';
 
 export const OrderSchema = new mongoose.Schema(
   {
@@ -9,19 +9,29 @@ export const OrderSchema = new mongoose.Schema(
       default: () => new Types.ObjectId(),
       required: true,
     },
-    products: [
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    items: [
       {
-        type: {
-          product: {
-            type: Schema.Types.ObjectId,
-            ref: 'Product',
-          },
-          quantity: { type: Number },
-          size: { type: String },
-          color: { type: String },
+        product: {
+          type: Schema.Types.ObjectId,
+          ref: 'Product',
+          required: true,
         },
+        stock: { type: Number, required: true },
+        quantity: { type: Number, required: true },
+        size: { type: String, required: true },
+        color: { type: String },
       },
     ],
+    orderStatus: {
+      type: String,
+      enum: OrderStatus,
+      required: true,
+    },
     status: {
       type: Object,
       default: {

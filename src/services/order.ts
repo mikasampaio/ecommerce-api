@@ -12,24 +12,51 @@ export class OrderService {
     private productRepository: ProductRepository,
   ) {}
 
-  async create({ products }: CreateOrderDTO) {
-    products.map(async (product) => {
-      const foundProduct = await this.productRepository.getById(
-        product.product,
-      );
+  async formattedItems(
+    items: CreateOrderDTO['items'] | UpdateOrderDTO['items'],
+  ) {
+    return await Promise.all(
+      items.map(async (item) => {
+        const findProduct = await this.productRepository.findOne({
+          _id: item.product as string,
+          'stock._id': item.stock,
+          'stock.quantity': {
+            $gte: item.quantity,
+          },
+          'stock.color': item.color,
+          'stock.size': item.size,
+        });
 
-      if (!foundProduct) {
-        throw new ErrorMessage('Produto não encontrado', StatusCodes.NOT_FOUND);
-      }
+        if (!findProduct) {
+          throw new ErrorMessage(
+            'Produto, estoque, cor ou tamanho inválido ou esgotado',
+            StatusCodes.NOT_FOUND,
+          );
+        }
 
-      // if (product.quantity > foundProduct.stock) {
-      //   throw new Error('Quantidade do produto em estoque insuficiente');
-      // }
+        return {
+          product: findProduct._id,
+          stock: item.stock,
+          quantity: item.quantity,
+          color: item.color,
+          size: item.size,
+        };
+      }),
+    );
+  }
 
-      // foundProduct.stock -= product.quantity;
+  async create({
+    items,
+    orderStatus,
+    user,
+  }: CreateOrderDTO & { user: string }) {
+    const formattedItems = await this.formattedItems(items);
+
+    const order = new Order({
+      items: formattedItems,
+      orderStatus,
+      user,
     });
-
-    const order = new Order({ products });
 
     const createdOrder = await this.orderRepository.create(order);
 
@@ -48,8 +75,22 @@ export class OrderService {
     return foundOrder;
   }
 
-  async update(id: string, data: UpdateOrderDTO): Promise<Order | undefined> {
-    const updatedCategory = await this.orderRepository.update(id, data);
+  async update(
+    id: string,
+    { items, orderStatus }: UpdateOrderDTO,
+  ): Promise<Order | undefined> {
+    const foundOrder = await this.orderRepository.getById(id);
+
+    if (!foundOrder) {
+      throw new ErrorMessage('Pedido não encontrado', StatusCodes.NOT_FOUND);
+    }
+
+    const formattedItems = await this.formattedItems(items);
+
+    const updatedCategory = await this.orderRepository.update(id, {
+      items: formattedItems,
+      orderStatus,
+    });
 
     return updatedCategory;
   }
