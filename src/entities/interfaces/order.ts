@@ -3,7 +3,6 @@ import { Size } from './product';
 
 export interface Items {
   product?: string;
-  stock?: number;
   quantity?: number;
   size?: Size;
   color?: string;

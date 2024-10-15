@@ -17,15 +17,7 @@ export class OrderService {
   ) {
     return await Promise.all(
       items.map(async (item) => {
-        const findProduct = await this.productRepository.findOne({
-          _id: item.product as string,
-          'stock._id': item.stock,
-          'stock.quantity': {
-            $gte: item.quantity,
-          },
-          'stock.color': item.color,
-          'stock.size': item.size,
-        });
+        const findProduct = await this.productRepository.getStock(item);
 
         if (!findProduct) {
           throw new ErrorMessage(
@@ -36,7 +28,6 @@ export class OrderService {
 
         return {
           product: findProduct._id,
-          stock: item.stock,
           quantity: item.quantity,
           color: item.color,
           size: item.size,

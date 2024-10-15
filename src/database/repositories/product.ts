@@ -1,7 +1,9 @@
+import mongoose, { ObjectId } from 'mongoose';
+
 import { UpdateProductDTO } from '../../dtos/ProductDTO';
 import { Product } from '../../entities/classes/product';
+import { Items } from '../../entities/interfaces/order';
 import { ProductModel } from '../schemas/product';
-
 export class ProductRepository {
   constructor(private model: typeof ProductModel) {}
 
@@ -46,11 +48,22 @@ export class ProductRepository {
     return deletedProduct;
   }
 
-  async findOne(
-    data: { [key: string]: unknown } & { _id: string },
-  ): Promise<Product | undefined> {
-    const product = await this.model.findOne({ $or: [data] });
+  async getStock(data: Items): Promise<Product | undefined> {
+    const aggregate = this.model.aggregate();
 
-    return product?.toObject<Product>();
+    const [result] = await aggregate
+      .match({
+        _id: new mongoose.Types.ObjectId(data.product),
+      })
+      .unwind({
+        path: '$stock',
+      })
+      .match({
+        'stock.size': data.size,
+        'stock.color': data.color,
+        'stock.quantity': { $gte: data.quantity },
+      });
+
+    return result;
   }
 }

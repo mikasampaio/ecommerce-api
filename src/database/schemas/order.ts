@@ -16,12 +16,12 @@ export const OrderSchema = new mongoose.Schema(
     },
     items: [
       {
+        _id: false,
         product: {
           type: Schema.Types.ObjectId,
           ref: 'Product',
           required: true,
         },
-        stock: { type: Number, required: true },
         quantity: { type: Number, required: true },
         size: { type: String, required: true },
         color: { type: String },

@@ -12,7 +12,6 @@ export const orderSchema = {
           required_error: 'Produto é obrigatório',
         })
         .length(24),
-      stock: z.number(),
       quantity: z.number().int().positive(),
       size: z.nativeEnum(Size).default(Size.M),
       color: z.string().regex(/^#[A-Fa-f0-9]{6}$/),
@@ -30,7 +29,6 @@ export const updateOrderSchema = {
         })
         .length(24)
         .optional(),
-      stock: z.number().optional(),
       quantity: z.number().int().positive().optional(),
       size: z.nativeEnum(Size).default(Size.M).optional(),
       color: z
