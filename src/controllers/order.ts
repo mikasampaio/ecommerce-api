@@ -20,12 +20,13 @@ export class OrderController {
     try {
       const id = req.userId;
 
-      const { items, orderStatus } = req.body;
+      const { items, orderStatus, total } = req.body;
 
       const order = await this.orderService.create({
         items,
         orderStatus,
         user: id as string,
+        total,
       });
 
       res.status(StatusCodes.CREATED).json(order);

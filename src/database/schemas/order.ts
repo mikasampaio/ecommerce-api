@@ -32,6 +32,7 @@ export const OrderSchema = new mongoose.Schema(
       enum: OrderStatus,
       required: true,
     },
+    total: { type: Number },
     status: {
       type: Object,
       default: {

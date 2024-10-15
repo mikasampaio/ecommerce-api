@@ -6,6 +6,7 @@ export interface Items {
   quantity?: number;
   size?: Size;
   color?: string;
+  total?: number;
 }
 
 export enum OrderStatus {
@@ -23,4 +24,5 @@ export interface IOrder {
   orderStatus: OrderStatus;
   items: Items[];
   user: string;
+  total: number;
 }

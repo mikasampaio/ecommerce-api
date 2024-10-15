@@ -48,7 +48,7 @@ export class ProductRepository {
     return deletedProduct;
   }
 
-  async getStock(data: Items): Promise<Product | undefined> {
+  async getStock(data: Items) {
     const aggregate = this.model.aggregate();
 
     const [result] = await aggregate

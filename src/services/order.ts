@@ -4,6 +4,7 @@ import { OrderRepository } from '../database/repositories/order';
 import { ProductRepository } from '../database/repositories/product';
 import { CreateOrderDTO, UpdateOrderDTO } from '../dtos/OrderDTO';
 import { Order } from '../entities/classes/order';
+import { Items } from '../entities/interfaces/order';
 import { ErrorMessage } from '../errors/errorMessage';
 
 export class OrderService {
@@ -15,25 +16,31 @@ export class OrderService {
   async formattedItems(
     items: CreateOrderDTO['items'] | UpdateOrderDTO['items'],
   ) {
-    return await Promise.all(
-      items.map(async (item) => {
-        const findProduct = await this.productRepository.getStock(item);
+    if (items)
+      return await Promise.all(
+        items.map(async (item) => {
+          const findProduct = await this.productRepository.getStock(item);
 
-        if (!findProduct) {
-          throw new ErrorMessage(
-            'Produto, estoque, cor ou tamanho inválido ou esgotado',
-            StatusCodes.NOT_FOUND,
-          );
-        }
+          if (!findProduct) {
+            throw new ErrorMessage(
+              'Produto, estoque, cor ou tamanho inválido ou esgotado',
+              StatusCodes.NOT_FOUND,
+            );
+          }
 
-        return {
-          product: findProduct._id,
-          quantity: item.quantity,
-          color: item.color,
-          size: item.size,
-        };
-      }),
-    );
+          return {
+            product: findProduct._id,
+            quantity: item?.quantity,
+            color: item?.color,
+            size: item?.size,
+            total:
+              findProduct.price -
+              (findProduct.stock.discount !== null
+                ? findProduct.stock.discount
+                : 0),
+          };
+        }),
+      );
   }
 
   async create({
@@ -41,12 +48,16 @@ export class OrderService {
     orderStatus,
     user,
   }: CreateOrderDTO & { user: string }) {
-    const formattedItems = await this.formattedItems(items);
+    const formattedItems = (await this.formattedItems(items)) as Items[];
 
     const order = new Order({
       items: formattedItems,
       orderStatus,
       user,
+      total: formattedItems.reduce(
+        (acc, curr) => acc + (curr.total as number),
+        0,
+      ),
     });
 
     const createdOrder = await this.orderRepository.create(order);
@@ -76,10 +87,13 @@ export class OrderService {
       throw new ErrorMessage('Pedido não encontrado', StatusCodes.NOT_FOUND);
     }
 
-    const formattedItems = await this.formattedItems(items);
+    if (items) {
+      const formattedItems = await this.formattedItems(items);
+      items = formattedItems;
+    }
 
     const updatedCategory = await this.orderRepository.update(id, {
-      items: formattedItems,
+      items,
       orderStatus,
     });
 

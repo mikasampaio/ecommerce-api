@@ -42,6 +42,7 @@ export const updateProductSchema = {
   stock: z
     .array(
       z.object({
+        _id: z.number().optional(),
         name: z.string().optional(),
         quantity: z
           .number()

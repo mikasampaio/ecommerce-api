@@ -17,26 +17,30 @@ export const orderSchema = {
       color: z.string().regex(/^#[A-Fa-f0-9]{6}$/),
     }),
   ),
+  total: z.number().optional(),
 };
 
 export const updateOrderSchema = {
   orderStatus: z.nativeEnum(OrderStatus).optional(),
-  items: z.array(
-    z.object({
-      product: z
-        .string({
-          required_error: 'Produto é obrigatório',
-        })
-        .length(24)
-        .optional(),
-      quantity: z.number().int().positive().optional(),
-      size: z.nativeEnum(Size).default(Size.M).optional(),
-      color: z
-        .string()
-        .regex(/^#[A-Fa-f0-9]{6}$/)
-        .optional(),
-    }),
-  ),
+  items: z
+    .array(
+      z.object({
+        product: z
+          .string({
+            required_error: 'Produto é obrigatório',
+          })
+          .length(24)
+          .optional(),
+        quantity: z.number().int().positive().optional(),
+        size: z.nativeEnum(Size).default(Size.M).optional(),
+        color: z
+          .string()
+          .regex(/^#[A-Fa-f0-9]{6}$/)
+          .optional(),
+      }),
+    )
+    .optional(),
+  total: z.number().optional(),
 };
 
 const createOrderObject = z.object(orderSchema);
