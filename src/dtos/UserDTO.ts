@@ -6,13 +6,12 @@ export const createUserSchema = {
   firstName: z.string({ required_error: 'Nome é obrigatório' }).min(1),
   lastName: z.string({ required_error: 'Sobrenome é obrigatório' }).min(1),
   email: z.string().email({ message: 'E-mail é obrigatório' }).min(1),
-  password: z
-    .string({
-      required_error: 'Senha é obrigatória',
-    })
-    .min(8, {
-      message: 'A senha deve ter no mínimo 8 caracteres',
-    }),
+  password: z.string({
+    required_error: 'Senha é obrigatória',
+  }),
+  // .min(8, {
+  //   message: 'A senha deve ter no mínimo 8 caracteres',
+  // }),
   type: z.nativeEnum(UserType).default(UserType.USER),
 };
 
@@ -22,9 +21,9 @@ export const updateUserSchema = {
   email: z.string().email({ message: 'E-mail inválido' }).optional(),
   password: z
     .string()
-    .min(8, {
-      message: 'A senha deve ter no mínimo 8 caracteres',
-    })
+    // .min(8, {
+    //   message: 'A senha deve ter no mínimo 8 caracteres',
+    // })
     .optional(),
   type: z.nativeEnum(UserType).optional(),
 };

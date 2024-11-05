@@ -29,14 +29,10 @@ export const updateOrderSchema = {
           .string({
             required_error: 'Produto é obrigatório',
           })
-          .length(24)
-          .optional(),
-        quantity: z.number().int().positive().optional(),
-        size: z.nativeEnum(Size).default(Size.M).optional(),
-        color: z
-          .string()
-          .regex(/^#[A-Fa-f0-9]{6}$/)
-          .optional(),
+          .length(24),
+        quantity: z.number().int().positive(),
+        size: z.nativeEnum(Size).default(Size.M),
+        color: z.string().regex(/^#[A-Fa-f0-9]{6}$/),
       }),
     )
     .optional(),

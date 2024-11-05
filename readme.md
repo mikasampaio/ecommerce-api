@@ -26,3 +26,17 @@ Pedidos
 
 Features
     [ ] - Criar função de 'NÃO AUTORIZADO' em rotas que devem ser utilizadas somente pelo ADMIN
+
+Produtos
+    - Nome 
+    - Preço
+    - Desconto
+    - Categoria
+    - Descrição
+    - Variantes [
+        - Nome
+        - Tamanho
+        - Cor
+        - Quantidade
+        - Foto
+    ]

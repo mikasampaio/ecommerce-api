@@ -3,36 +3,30 @@ import { model, Schema, Types } from 'mongoose';
 import { IProduct, Size } from '../../entities/interfaces/product';
 import { CategorySchema } from './category';
 
-const StockSchema = new Schema({
-  _id: {
-    type: Number,
+const VariationSchema = new Schema(
+  {
+    name: String,
+    size: {
+      type: String,
+      enum: Size,
+      required: true,
+    },
+    quantity: {
+      type: Number,
+      required: true,
+    },
+    color: {
+      type: String /*  {
+      name: String,
+      hex: String,
+      }, */,
+    },
+    path: {
+      type: [String],
+    },
   },
-  name: {
-    type: String,
-    required: true,
-  },
-  quantity: {
-    type: Number,
-    required: true,
-  },
-  size: {
-    type: [String],
-    enum: Size,
-    required: true,
-  },
-  color: {
-    type: [String],
-  },
-  discount: {
-    type: Number,
-  },
-  path: {
-    type: [String],
-  },
-  description: {
-    type: String,
-  },
-});
+  { _id: false },
+);
 
 export const ProductSchema = new Schema(
   {
@@ -49,12 +43,14 @@ export const ProductSchema = new Schema(
       type: Number,
       required: true,
     },
+    discount: Number,
     category: {
       type: CategorySchema,
       required: true,
     },
-    stock: {
-      type: [StockSchema], // Array of stock objects
+    description: String,
+    variants: {
+      type: [VariationSchema],
       required: true,
     },
     status: {
@@ -71,16 +67,16 @@ export const ProductSchema = new Schema(
 );
 
 // Middleware to auto-increment stock IDs
-ProductSchema.pre('save', function (next) {
-  if (this.stock.length > 0) {
-    this.stock.forEach((stock, index) => {
-      if (!stock._id) {
-        stock._id = index + 1;
-      }
-    });
-  }
+// ProductSchema.pre('save', function (next) {
+//   if (this.stock.length > 0) {
+//     this.stock.forEach((stock, index) => {
+//       if (!stock._id) {
+//         stock._id = index + 1;
+//       }
+//     });
+//   }
 
-  next();
-});
+//   next();
+// });
 
 export const ProductModel = model<IProduct>('Product', ProductSchema);

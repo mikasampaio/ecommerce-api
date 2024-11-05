@@ -37,8 +37,6 @@ export class OrderRepository {
       },
     );
 
-    console.log(updated);
-
     return updated?.toObject<Order>();
   }
 

@@ -2,16 +2,15 @@ import { Status } from './common';
 import { Size } from './product';
 
 export interface Items {
-  product?: string;
-  quantity?: number;
-  size?: Size;
-  color?: string;
-  total?: number;
+  product: string;
+  quantity: number;
+  size: Size;
+  color: string;
 }
 
 export enum OrderStatus {
   PENDING = 'PENDING',
-  PROCESING = 'PROCESING',
+  PROCESSING = 'PROCESSING',
   SHIPPED = 'SHIPPED',
   DELIVERED = 'DELIVERED',
   COMPLETED = 'COMPLETED',
@@ -24,5 +23,5 @@ export interface IOrder {
   orderStatus: OrderStatus;
   items: Items[];
   user: string;
-  total: number;
+  total: number | string;
 }

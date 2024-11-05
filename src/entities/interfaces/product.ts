@@ -1,30 +1,28 @@
 import { Category } from '../classes/category';
-import { Status } from './common';
 
 export enum Size {
-  S = 'S', // Pequeno
+  PP = 'PP',
+  P = 'P', // Pequeno
   M = 'M', // Médio
-  L = 'L', // Grande
-  XL = 'XL', // Extra Grande
-  XXL = 'XXL', // Duplo Extra Grande
+  G = 'G', // Grande
+  GG = 'GG', // Extra Grande
+  XG = 'XG', // Duplo Extra Grande
 }
 
-export interface Stock {
-  _id?: number;
+export interface Variant {
   name?: string;
-  quantity?: number;
-  size?: Size[];
-  discount?: number | null;
-  color?: string[];
   path?: string[];
-  description?: string;
-  status?: Status;
+  size: Size;
+  quantity: number;
+  color: string;
 }
 
 export interface IProduct {
   _id?: string;
   name: string;
   price: number;
+  discount: number | null;
   category: Category;
-  stock: Stock[];
+  description: string;
+  variants: Variant[];
 }

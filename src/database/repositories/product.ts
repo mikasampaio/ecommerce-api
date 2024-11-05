@@ -48,20 +48,29 @@ export class ProductRepository {
     return deletedProduct;
   }
 
-  async getStock(data: Items) {
+  async getVariants({
+    color,
+    product,
+    quantity,
+    size,
+  }: Items): Promise<Product> {
     const aggregate = this.model.aggregate();
 
     const [result] = await aggregate
       .match({
-        _id: new mongoose.Types.ObjectId(data.product),
+        _id: new mongoose.Types.ObjectId(product),
       })
       .unwind({
-        path: '$stock',
+        path: '$variants',
       })
       .match({
-        'stock.size': data.size,
-        'stock.color': data.color,
-        'stock.quantity': { $gte: data.quantity },
+        'variants.size': size,
+        'variants.quantity': { $gte: quantity },
+        'variants.color': color,
+      })
+      .project({
+        price: 1,
+        discount: 1,
       });
 
     return result;

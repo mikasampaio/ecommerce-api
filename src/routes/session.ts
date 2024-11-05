@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 
 import { SessionController } from '../controllers/session';
 import { sessionSchema } from '../dtos/sessionDTO';
@@ -8,11 +8,13 @@ export const sessionRouter = Router();
 
 const sessionControler = new SessionController();
 
-sessionRouter.get(
-  '/',
+sessionRouter.post('/', (req: Request, res: Response, next: NextFunction) => {
+  if (req.headers.authorization) {
+    return sessionControler.store(req, res, next);
+  }
+
   validator({
     schema: sessionSchema,
     type: QueryParams.BODY,
-  }),
-  sessionControler.store,
-);
+  })(req, res, () => sessionControler.store(req, res, next));
+});

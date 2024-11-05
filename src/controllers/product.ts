@@ -30,13 +30,16 @@ export class ProductController {
         );
       }
 
-      const { name, price, category, stock } = req.body;
+      const { name, price, discount, category, description, variants } =
+        req.body;
 
       const response = await this.productService.create({
         name,
         price,
+        discount,
         category,
-        stock,
+        description,
+        variants,
       });
 
       // RETORNANDO A RESPOSTA, APÓS A CRIAÇÃO
