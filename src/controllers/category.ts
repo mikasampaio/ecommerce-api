@@ -15,12 +15,16 @@ export class CategoryController {
   ) {}
 
   create = async (
-    req: Request<unknown, unknown, CreateCategoryDTO> & { userId?: string },
+    req: Request<unknown, unknown, CreateCategoryDTO> & {
+      userId?: string;
+      file?: Express.Multer.File;
+    },
     res: Response<Category>,
     next: NextFunction,
   ) => {
     try {
       const id = req.userId;
+
       const { type } = await this.userService.findById(id as string);
 
       if (type !== UserType.ADMIN) {
@@ -31,8 +35,12 @@ export class CategoryController {
       }
 
       const { name } = req.body;
+      const { filename: image } = req.file as Express.Multer.File;
 
-      const category = await this.categoryService.create({ name });
+      const category = await this.categoryService.create({
+        name,
+        image,
+      });
 
       res.status(StatusCodes.CREATED).json(category);
     } catch (err) {

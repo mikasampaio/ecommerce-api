@@ -1,4 +1,6 @@
 import 'dotenv/config';
+import { resolve } from 'node:path';
+
 import cors from 'cors';
 import express, { json } from 'express';
 
@@ -12,6 +14,7 @@ mongoConfig().then(() => {
   app.use(cors());
   app.use(json());
   app.use(routes);
+  app.use('/product-file', express.static(resolve(__dirname, '..', 'uploads')));
   app.use(errorHandler);
 
   app.listen(3333, () => {

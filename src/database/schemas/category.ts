@@ -10,6 +10,8 @@ export const CategorySchema = new mongoose.Schema(
       required: true,
     },
     name: String,
+    image: String,
+    url: String,
     status: {
       type: Object,
       default: {
@@ -22,6 +24,14 @@ export const CategorySchema = new mongoose.Schema(
   },
   { versionKey: false },
 );
+
+CategorySchema.pre('save', function (next) {
+  if (this.image) {
+    this.url = `${process.env.API_URL}/product-file/${this.image}`;
+  }
+
+  next();
+});
 
 export const CategoryModel = mongoose.model<ICategory>(
   'Category',

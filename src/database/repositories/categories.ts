@@ -4,8 +4,8 @@ import { CategoryModel } from '../schemas/category';
 export class CategoryRepository {
   constructor(private repository: typeof CategoryModel) {}
 
-  async create({ name }: Category): Promise<Category> {
-    const createdCategory = await this.repository.create({ name });
+  async create({ name, image }: Category): Promise<Category> {
+    const createdCategory = await this.repository.create({ name, image });
 
     return createdCategory.toObject<Category>();
   }

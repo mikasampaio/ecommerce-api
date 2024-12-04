@@ -6,9 +6,11 @@ export const categorySchema = {
 
 export const updateCategorySchema = {
   name: z.string().optional(),
+  image: z.string().optional(),
 };
 
 const createCategoryObject = z.object(categorySchema);
+
 export type CreateCategoryDTO = z.infer<typeof createCategoryObject>;
 
 const updateCategoryObject = z.object(updateCategorySchema);

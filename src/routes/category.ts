@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
+import multer from 'multer';
 
+import multerConfig from '../config/multer';
 import { CategoryController } from '../controllers/category';
 import { categorySchema, updateCategorySchema } from '../dtos/CategoryDTO';
 import { CategoryFactory } from '../factories/category';
@@ -7,6 +9,7 @@ import { UserFactory } from '../factories/user';
 import { QueryParams, validator } from '../middlewares/validator';
 
 export const categoryRouter = Router();
+const upload = multer(multerConfig);
 
 const categoryController = new CategoryController(
   CategoryFactory.getService(),
@@ -15,6 +18,7 @@ const categoryController = new CategoryController(
 
 categoryRouter.post(
   '/',
+  upload.single('image'),
   validator({
     schema: categorySchema,
     type: QueryParams.BODY,
