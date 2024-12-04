@@ -13,6 +13,7 @@ export const createUserSchema = {
   //   message: 'A senha deve ter no mínimo 8 caracteres',
   // }),
   type: z.nativeEnum(UserType).default(UserType.USER),
+  favorites: z.array(z.string()).optional(),
 };
 
 export const updateUserSchema = {
@@ -26,9 +27,16 @@ export const updateUserSchema = {
     // })
     .optional(),
   type: z.nativeEnum(UserType).optional(),
+  favorites: z.array(z.string()).optional(),
 };
 
-const createUserObject = z.object(createUserSchema);
+const createUserObject = z.object(createUserSchema).transform((data) => {
+  return {
+    ...data,
+    favorites: [],
+  };
+});
+
 export type CreateUserDTO = z.infer<typeof createUserObject>;
 
 const updateUserObject = z.object(updateUserSchema);

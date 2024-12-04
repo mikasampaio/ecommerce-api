@@ -42,7 +42,8 @@ export const updateProductSchema = {
     .positive({
       message: 'Desconto deve ser um número positivo',
     })
-    .nullable(),
+    .nullable()
+    .optional(),
   category: z.string().optional(),
   description: z.string().optional(),
   variants: z

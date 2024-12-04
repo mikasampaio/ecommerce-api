@@ -8,14 +8,14 @@ import { ErrorMessage } from '../errors/errorMessage';
 export class CategoryService {
   constructor(private categoryRepository: CategoryRepository) {}
 
-  async create({ name }: CreateCategoryDTO) {
+  async create({ name, image }: CreateCategoryDTO & { image: string }) {
     const foundCategory = await this.categoryRepository.findByName(name);
 
     if (foundCategory) {
       throw new ErrorMessage('Categoria já existe', StatusCodes.BAD_REQUEST);
     }
 
-    const category = new Category({ name });
+    const category = new Category({ name, image });
 
     const createdCategory = await this.categoryRepository.create(category);
 

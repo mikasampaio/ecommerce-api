@@ -1,4 +1,6 @@
 import { User } from '../../entities/classes/user';
+import { IProduct } from '../../entities/interfaces/product';
+import { IFavorite } from '../../entities/interfaces/user';
 import { UserModel } from '../schemas/user';
 export class UserRepository {
   constructor(private model: typeof UserModel) {}
@@ -9,6 +11,7 @@ export class UserRepository {
     email,
     password,
     type,
+    favorites,
   }: User): Promise<User> {
     const createdUser = await this.model.create({
       firstName,
@@ -16,6 +19,7 @@ export class UserRepository {
       email,
       password,
       type,
+      favorites,
     });
 
     return createdUser.toObject<User>();
@@ -34,7 +38,7 @@ export class UserRepository {
   }
 
   async findById(id: string): Promise<User | undefined> {
-    const user = await this.model.findById(id);
+    const user = await this.model.findById(id).exec();
 
     return user?.toObject<User>();
   }
@@ -60,5 +64,25 @@ export class UserRepository {
     });
 
     return deletedUser;
+  }
+
+  async getFavorites(allFavorites: IFavorite[]): Promise<IFavorite[]> {
+    return allFavorites;
+  }
+
+  async updateFavorites(
+    userId: string,
+    product: IProduct,
+    isFavorited: boolean,
+  ): Promise<User | undefined> {
+    const updatedFavorite = await UserModel.findByIdAndUpdate(
+      userId,
+      isFavorited
+        ? { $pull: { favorites: product._id } }
+        : { $addToSet: { favorites: product._id } },
+      { new: true },
+    ).exec();
+
+    return updatedFavorite?.toObject<User>();
   }
 }

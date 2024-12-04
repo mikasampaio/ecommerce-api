@@ -15,7 +15,8 @@ export class UserController {
     next: NextFunction,
   ) => {
     try {
-      const { firstName, lastName, email, password, type } = req.body;
+      const { firstName, lastName, email, password, type, favorites } =
+        req.body;
 
       const user = await this.userService.create({
         firstName,
@@ -23,6 +24,7 @@ export class UserController {
         email,
         password,
         type,
+        favorites: [],
       });
 
       // RETORNANDO A RESPOSTA, APÓS A CRIAÇÃO
@@ -97,6 +99,41 @@ export class UserController {
       res
         .status(StatusCodes.OK)
         .send({ message: 'Usuário deletado com sucesso' });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  getFavorites = async (
+    req: Request & { userId?: string },
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const userId = req.userId;
+      const orders = await this.userService.getFavorites(userId as string);
+
+      res.status(StatusCodes.OK).json(orders);
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  updateFavorites = async (
+    req: Request<{ id: string }, unknown, unknown> & { userId?: string },
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const userId = req.userId;
+      const { product } = req.query;
+
+      const updatedOrder = await this.userService.updateFavorites(
+        userId as string,
+        product as string,
+      );
+
+      res.status(StatusCodes.OK).json(updatedOrder);
     } catch (err) {
       next(err);
     }

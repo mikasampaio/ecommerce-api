@@ -12,10 +12,10 @@ export const routes = Router();
 
 routes.use('/', baseRoutes);
 routes.use('/session', sessionRouter);
-routes.use('/product', productRouter);
 
 routes.use(authMiddleware);
 
+routes.use('/product', productRouter);
 routes.use('/user', userRouter);
 routes.use('/category', categoryRouter);
 routes.use('/order', orderRouter);

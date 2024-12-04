@@ -1,9 +1,9 @@
 import mongoose, { ObjectId } from 'mongoose';
 
-import { UpdateProductDTO } from '../../dtos/ProductDTO';
 import { Product } from '../../entities/classes/product';
 import { Items } from '../../entities/interfaces/order';
 import { ProductModel } from '../schemas/product';
+
 export class ProductRepository {
   constructor(private model: typeof ProductModel) {}
 

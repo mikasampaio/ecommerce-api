@@ -8,13 +8,23 @@ export class User {
   lastName: string;
   password: string;
   type: UserType;
+  favorites: string[];
 
-  constructor({ email, password, firstName, lastName, type, _id }: IUser) {
+  constructor({
+    email,
+    password,
+    firstName,
+    lastName,
+    type,
+    favorites,
+    _id,
+  }: IUser) {
     this._id = _id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
     this.password = password;
     this.type = type;
+    this.favorites = favorites;
   }
 }

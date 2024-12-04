@@ -18,6 +18,7 @@ export const UserSchema = new Schema(
       type: String,
       enum: UserType,
     },
+    favorites: [String],
     status: {
       type: Object,
       default: {

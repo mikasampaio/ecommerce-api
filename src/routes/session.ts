@@ -10,7 +10,7 @@ const sessionControler = new SessionController();
 
 sessionRouter.post('/', (req: Request, res: Response, next: NextFunction) => {
   if (req.headers.authorization) {
-    return sessionControler.store(req, res, next);
+    return sessionControler.bearerToken(req, res, next);
   }
 
   validator({

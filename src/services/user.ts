@@ -2,8 +2,11 @@ import bcrypt from 'bcryptjs';
 import { StatusCodes } from 'http-status-codes';
 
 import { UserRepository } from '../database/repositories/user';
+import { ProductModel } from '../database/schemas/product';
 import { CreateUserDTO, UpdateUserDTO } from '../dtos/UserDTO';
 import { User } from '../entities/classes/user';
+import { IProduct } from '../entities/interfaces/product';
+import { IFavorite } from '../entities/interfaces/user';
 import { ErrorMessage } from '../errors/errorMessage';
 
 export class UserService {
@@ -15,6 +18,7 @@ export class UserService {
     email,
     password,
     type,
+    favorites,
   }: CreateUserDTO): Promise<User> {
     const foundUser = await this.userRepository.getByEmail(email);
 
@@ -28,6 +32,7 @@ export class UserService {
       email,
       password,
       type,
+      favorites,
     });
 
     if (password) {
@@ -63,5 +68,45 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async getFavorites(userId: string): Promise<IFavorite[]> {
+    const user = await this.userRepository.findById(userId);
+
+    if (!user) {
+      throw new ErrorMessage('Usuário não encontrado.', StatusCodes.NOT_FOUND);
+    }
+
+    const allFavorites = (await ProductModel.find({
+      _id: { $in: user.favorites },
+    })
+      .select('_id name price discount')
+      .exec()) as IFavorite[];
+
+    return await this.userRepository.getFavorites(allFavorites);
+  }
+
+  async updateFavorites(userId: string, product: string) {
+    const findProduct = await ProductModel.findById(product);
+
+    if (!findProduct) {
+      throw new ErrorMessage('Produto não existente', StatusCodes.NOT_FOUND);
+    }
+
+    const user = await this.userRepository.findById(userId);
+
+    if (!user) {
+      throw new ErrorMessage('Usuário não encontrado.', StatusCodes.NOT_FOUND);
+    }
+
+    const isFavorited = user.favorites.includes(product);
+
+    const updatedFavorite = await this.userRepository.updateFavorites(
+      userId,
+      findProduct,
+      isFavorited,
+    );
+
+    return updatedFavorite;
   }
 }

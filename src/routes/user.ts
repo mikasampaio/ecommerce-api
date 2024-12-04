@@ -36,3 +36,7 @@ userRouter.put(
 );
 
 userRouter.delete('/', userController.delete);
+
+userRouter.get('/favorites', userController.getFavorites);
+
+userRouter.put('/favorites', userController.updateFavorites);
