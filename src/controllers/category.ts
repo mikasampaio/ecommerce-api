@@ -78,12 +78,13 @@ export class CategoryController {
     try {
       const { id } = req.query;
 
-      const category = req.body;
+      const { name } = req.body;
+      const { filename: image } = req.file as Express.Multer.File;
 
-      const updatedCategory = await this.categoryService.update(
-        id as string,
-        category,
-      );
+      const updatedCategory = await this.categoryService.update(id as string, {
+        name,
+        image,
+      });
 
       res.status(StatusCodes.OK).json(updatedCategory);
     } catch (err) {

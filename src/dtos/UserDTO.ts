@@ -37,7 +37,14 @@ const createUserObject = z.object(createUserSchema).transform((data) => {
   };
 });
 
+export const getUserSchema = {
+  search: z.string().optional(),
+};
+
 export type CreateUserDTO = z.infer<typeof createUserObject>;
 
 const updateUserObject = z.object(updateUserSchema);
 export type UpdateUserDTO = z.infer<typeof updateUserObject>;
+
+const getUserObject = z.object(getUserSchema);
+export type GetUserDTO = z.infer<typeof getUserObject>;

@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 
 import { UserRepository } from '../database/repositories/user';
 import { ProductModel } from '../database/schemas/product';
-import { CreateUserDTO, UpdateUserDTO } from '../dtos/UserDTO';
+import { CreateUserDTO, GetUserDTO, UpdateUserDTO } from '../dtos/UserDTO';
 import { User } from '../entities/classes/user';
 import { IProduct } from '../entities/interfaces/product';
 import { IFavorite } from '../entities/interfaces/user';
@@ -70,18 +70,24 @@ export class UserService {
     return user;
   }
 
-  async getFavorites(userId: string): Promise<IFavorite[]> {
+  async getFavorites(
+    userId: string,
+    { search }: GetUserDTO,
+  ): Promise<IFavorite[]> {
     const user = await this.userRepository.findById(userId);
 
     if (!user) {
       throw new ErrorMessage('Usuário não encontrado.', StatusCodes.NOT_FOUND);
     }
 
+    const whereParams: Record<string, unknown> = {
+      ...(search && { name: { $regex: search, $options: 'i' } }),
+    };
+
     const allFavorites = (await ProductModel.find({
       _id: { $in: user.favorites },
-    })
-      .select('_id name price discount')
-      .exec()) as IFavorite[];
+      ...whereParams,
+    }).exec()) as IFavorite[];
 
     return await this.userRepository.getFavorites(allFavorites);
   }

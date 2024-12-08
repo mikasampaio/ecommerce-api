@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-import { CreateUserDTO, UpdateUserDTO } from '../dtos/UserDTO';
+import { CreateUserDTO, GetUserDTO, UpdateUserDTO } from '../dtos/UserDTO';
 import { User } from '../entities/classes/user';
 import { ErrorMessage } from '../errors/errorMessage';
 import { UserService } from '../services/user';
+import { QueryRequest } from './types';
 
 export class UserController {
   constructor(private userService: UserService) {}
@@ -105,13 +106,16 @@ export class UserController {
   };
 
   getFavorites = async (
-    req: Request & { userId?: string },
+    req: QueryRequest<GetUserDTO> & { userId: string },
     res: Response,
     next: NextFunction,
   ) => {
     try {
       const userId = req.userId;
-      const orders = await this.userService.getFavorites(userId as string);
+      const { search } = req.query;
+      const orders = await this.userService.getFavorites(userId as string, {
+        search,
+      });
 
       res.status(StatusCodes.OK).json(orders);
     } catch (err) {

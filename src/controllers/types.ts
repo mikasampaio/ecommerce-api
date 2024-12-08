@@ -5,5 +5,5 @@ export type QueryRequest<T> = Request<
   unknown,
   unknown,
   unknown,
-  T & { id?: string }
+  T & { userId?: string }
 >;
