@@ -1,12 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-import { CreateProductDTO, UpdateProductDTO } from '../dtos/ProductDTO';
+import {
+  CreateProductDTO,
+  GetProductDTO,
+  UpdateProductDTO,
+} from '../dtos/ProductDTO';
 import { Product } from '../entities/classes/product';
 import { UserType } from '../entities/interfaces/common';
 import { ErrorMessage } from '../errors/errorMessage';
 import { ProductService } from '../services/product';
 import { UserService } from '../services/user';
+import { QueryRequest } from './types';
 
 export class ProductController {
   constructor(
@@ -49,9 +54,20 @@ export class ProductController {
     }
   };
 
-  get = async (_: Request, res: Response, next: NextFunction) => {
+  get = async (
+    req: QueryRequest<GetProductDTO>,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
-      const products = await this.productService.get();
+      const { search, category, size, minPrice, maxPrice } = req.query;
+      const products = await this.productService.get({
+        search,
+        category,
+        size,
+        minPrice,
+        maxPrice,
+      });
 
       res.status(StatusCodes.OK).json(products);
     } catch (err) {

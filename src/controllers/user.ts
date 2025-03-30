@@ -106,7 +106,7 @@ export class UserController {
   };
 
   getFavorites = async (
-    req: QueryRequest<GetUserDTO> & { userId: string },
+    req: QueryRequest<GetUserDTO> & { userId?: string },
     res: Response,
     next: NextFunction,
   ) => {

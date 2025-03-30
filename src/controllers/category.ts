@@ -7,6 +7,7 @@ import { UserType } from '../entities/interfaces/common';
 import { ErrorMessage } from '../errors/errorMessage';
 import { CategoryService } from '../services/category';
 import { UserService } from '../services/user';
+import { BodyRequest, QueryRequest } from './types';
 
 export class CategoryController {
   constructor(
@@ -15,8 +16,7 @@ export class CategoryController {
   ) {}
 
   create = async (
-    req: Request<unknown, unknown, CreateCategoryDTO> & {
-      userId?: string;
+    req: BodyRequest<CreateCategoryDTO> & {
       file?: Express.Multer.File;
     },
     res: Response<Category>,
