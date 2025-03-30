@@ -1,5 +1,6 @@
 import mongoose, { ObjectId } from 'mongoose';
 
+import { GetProductDTO } from '../../dtos/ProductDTO';
 import { Product } from '../../entities/classes/product';
 import { Items } from '../../entities/interfaces/order';
 import { ProductModel } from '../schemas/product';
@@ -13,8 +14,26 @@ export class ProductRepository {
     return createdProduct.toObject<Product>();
   }
 
-  async get(): Promise<Product[]> {
-    const products = await this.model.find();
+  async get({
+    search,
+    size,
+    category,
+    minPrice,
+    maxPrice,
+  }: GetProductDTO): Promise<Product[]> {
+    const whereParams: Record<string, unknown> = {
+      ...(search && { name: { $regex: search, $options: 'i' } }),
+      ...(category && { 'category._id': category }),
+      ...(size && { 'variants.size': { $eq: size } }),
+    };
+
+    if (minPrice || maxPrice) {
+      whereParams.price = {
+        ...(minPrice && { $gte: minPrice }),
+        ...(maxPrice && { $lte: maxPrice }),
+      };
+    }
+    const products = await this.model.find(whereParams);
 
     return products.map((product) => product.toObject<Product>());
   }

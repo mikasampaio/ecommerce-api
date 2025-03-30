@@ -61,6 +61,17 @@ export const updateProductSchema = {
     .optional(),
 };
 
+export const getProductSchema = {
+  search: z.string().optional(),
+  category: z.string().length(24).optional(),
+  size: z.string().optional(),
+  minPrice: z.number().optional(),
+  maxPrice: z.number().optional(),
+};
+
+const getProductObject = z.object(getProductSchema);
+export type GetProductDTO = z.infer<typeof getProductObject>;
+
 const createProductObject = z.object(createProductSchema);
 export type CreateProductDTO = z.infer<typeof createProductObject>;
 
