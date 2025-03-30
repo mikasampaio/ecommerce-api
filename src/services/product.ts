@@ -2,7 +2,11 @@ import { StatusCodes } from 'http-status-codes';
 
 import { CategoryRepository } from '../database/repositories/categories';
 import { ProductRepository } from '../database/repositories/product';
-import { CreateProductDTO, UpdateProductDTO } from '../dtos/ProductDTO';
+import {
+  CreateProductDTO,
+  GetProductDTO,
+  UpdateProductDTO,
+} from '../dtos/ProductDTO';
 import { Product } from '../entities/classes/product';
 import { ErrorMessage } from '../errors/errorMessage';
 
@@ -26,8 +30,20 @@ export class ProductService {
     return createdProduct;
   }
 
-  async get(): Promise<Product[]> {
-    const products = await this.productRepository.get();
+  async get({
+    search,
+    category,
+    size,
+    minPrice,
+    maxPrice,
+  }: GetProductDTO): Promise<Product[]> {
+    const products = await this.productRepository.get({
+      search,
+      category,
+      size,
+      minPrice,
+      maxPrice,
+    });
 
     return products;
   }
