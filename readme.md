@@ -15,3 +15,13 @@ A aplicação é containerizada com Docker, facilitando o ambiente de desenvolvi
   - Bcrypt
   - Docker
   - Zod
+
+Features
+  - [ ] Atualizar quantidade de produtos em estoque, após realizadas compras (Status: PROCESSING)
+  - [ ] Implementar filtros em produtos
+    - [ ] Filtrar por categoria
+    - [ ] Filtrar por tamanho
+    - [ ] Filtrar por nome
+  - [ ] Favoritar produtos
+  - [ ] Implementar opção de adicionar foto as categorias
+  - [ ] Implementar API para upload de imagens dos produtos
